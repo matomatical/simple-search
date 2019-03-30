@@ -1,36 +1,48 @@
 import re
 
 from intropy import wiki
-wiki.setup("../../data/simple.wikipedia.org.2017.d/data.bz2","../../data/simple.wikipedia.org.2017.d/index.txt")
+
 
 from porter2 import stem
 
 def main():
-    article = wiki.parse(wiki.load("Alan Turing"))
+    wiki.setup( "../../data/simple.wikipedia.org.2017.d/data.bz2"
+              , "../../data/simple.wikipedia.org.2017.d/index.txt"
+              )
+    article = wiki.parse(wiki.load("Alan Turing")) \
+                  .strip_code(normalize=True, collapse=True)
+    tokens  = process(article)
+    types   = set(tokens)
 
-    # remove unwanted formatting information:
-    article = str(article.strip_code(normalize=True, collapse=True))
-    article = re.sub(r"<[^>]*>", " ", article)
+    print(tokens)
+    print(types)
 
-    # segment structure:
+RE_HTML_TAG = re.compile(r"<[^>]*>")
+RE_NON_WORD = re.compile(r"[^\w\d'\-\.]+", flags=re.UNICODE)
+def process(document):
+
+    # 1. remove unwanted formatting information:
+    document = RE_HTML_TAG.sub(" ", document)
+
+    # 2. segment structure:
     pass # is this necessary for IR?
 
-    # tokenise words:
-    # [\w\d'\-\.]+
-    words = re.split(r"[^\w\d'\-\.]+", article, flags=re.UNICODE)
-    words = [word.replace(".","") for word in words]
-    words = [word for word in words if word]
+    # 3. tokenise words:
+    # (simple approach, using regex)
+    words = RE_NON_WORD.split(document)
+    words = [word.replace(".", "") for word in words] # remove internal punct.
+    word = [word for word in words if word]
 
-    # normalise words:
-    words = [normalise(word) for word in words]
+    # 4. normalise words:
+    tokens = [normalise(word) for word in words]
 
-    # remove unwanted words:
-    words = [word for word in words if not stop(word)]
+    # 5. remove unwanted words:
+    tokens = [token for token in tokens if token and not stopword(token)]
 
-    print(words)
+    return tokens
 
 STOPWORDS = set()
-def stop(word):
+def stopword(word):
     return word in STOPWORDS
 
 def normalise(word):
