@@ -36,5 +36,12 @@ def main():
     print("total num tokens:  ", n_tokens)
     print("total num types:   ", len(type_ids))
 
+    print("SAVING:")
+    import pickle
+    with open("preproc.p", "wb") as pickle_jar:
+        pickle.dump((norm_documents, type_ids, type_cts), pickle_jar)
+# with open("preproc.p", "rb") as pickle_jar:
+#     (norm_documents, type_ids, type_cts) = pickle.load(pickle_jar)
+
 if __name__ == '__main__':
     main()
