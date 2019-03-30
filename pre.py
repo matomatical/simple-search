@@ -1,9 +1,9 @@
 import re
 
 from intropy import wiki
-from porter2 import stem
-
 wiki.setup("../../data/simple.wikipedia.org.2017.d/data.bz2","../../data/simple.wikipedia.org.2017.d/index.txt")
+
+from porter2 import stem
 
 def main():
     article = wiki.parse(wiki.load("Alan Turing"))
@@ -34,7 +34,7 @@ def stop(word):
     return word in STOPWORDS
 
 def normalise(word):
-    return stem(word.lower())
+    return stem(word)
 
 if __name__ == '__main__':
     main()
