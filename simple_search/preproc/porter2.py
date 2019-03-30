@@ -9,7 +9,6 @@ Usage:
 >>> stem(word)                                          # no need to .lower()
 """
 
-
 # Define a vowel as one of
 _VOWELS = {"a","e","i","o","u","y"}
 

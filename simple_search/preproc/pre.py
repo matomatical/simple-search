@@ -1,21 +1,6 @@
 import re
 
-from intropy import wiki
-
-
-from porter2 import stem
-
-def main():
-    wiki.setup( "../../data/simple.wikipedia.org.2017.d/data.bz2"
-              , "../../data/simple.wikipedia.org.2017.d/index.txt"
-              )
-    article = wiki.parse(wiki.load("Alan Turing")) \
-                  .strip_code(normalize=True, collapse=True)
-    tokens  = process(article)
-    types   = set(tokens)
-
-    print(tokens)
-    print(types)
+from simple_search.preproc.porter2 import stem
 
 RE_HTML_TAG = re.compile(r"<[^>]*>")
 RE_NON_WORD = re.compile(r"[^\w\d'\-\.]+", flags=re.UNICODE)
@@ -47,6 +32,3 @@ def stopword(word):
 
 def normalise(word):
     return stem(word)
-
-if __name__ == '__main__':
-    main()
