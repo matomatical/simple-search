@@ -95,6 +95,32 @@ def load(name):
     except IndexError:
         raise ArticleNotFoundError("Internal error: id={}".format(pageid))
 
+def load_all(n=None):
+    global _index_cache, _index_file
+
+    # if there's still index file left to read, we should read it all first
+    # before we try to iterate through its contents
+    if not _index_file.closed:
+        for row in _index_file:
+            offset, size, pageid, name = row.strip('\n').split(':', maxsplit=3)
+            offset = int(offset)
+            size = int(size)
+            name = fold(name)
+
+            # cache this lookup for next time
+            _index_cache[name] = offset, size, pageid
+        _index_file.close()
+
+    # now we can be sure that the index file is completely in memory (and
+    # by the way it should be sorted, since `dicts keep insertion order' now)
+    # let's start iterating through them (the load function will handle caching 
+    # the compressed blocks, which are grouped in the appropriate order i think)
+    if n is None: n = len(_index_cache)
+    for i, name in enumerate(_index_cache):
+        if i >= n:
+            break
+        yield (name, load(name))
+
 
 def parse(text):
     """Return a wikitext object version of raw MediaWiki-formatted string 'text'
