@@ -33,22 +33,31 @@ def preproc():
     type_cts = Counter()
     norm_documents = []
     i_all_articles = wiki.load_all(n=None, filter=non_meta)
-    for i, (article_name, article_raw) in enumerate(i_all_articles):
-        print("processing", i, "-", article_name, "...")
-        article = wiki.parse(article_raw).strip_code(normalize=True,collapse=True)
+    for i, (article_name, article) in enumerate(i_all_articles):
+        print(f"processing document {i}: '{article_name}'\n ...")
+        article = wiki.parse(article).strip_code(normalize=True, collapse=True)
+        article = str(article)
+        if article.startswith("REDIRECT"):
+            print(" (redirect; skipping)")
+            continue
 
         # process and save this document
-        article_tokens  = pre.process(article)
-        article_types   = set(article_tokens)
-        print(len(article_tokens), "tokens and", len(article_types), "types")
+        article_tokens  = pre.process(f"{article_name}\n\n{article}")
         norm_documents.append((article_name, article_tokens))
 
         # add to vocab and counts
         n_tokens += len(article_tokens)
-        type_cts.update(article_tokens)
-        for word in article_types:
-            if word not in type_ids:
-                type_ids[word] = len(type_ids)
+        new_types = 0
+        for token in article_tokens:
+            if token not in type_ids:
+                type_ids[token] = len(type_ids)
+                new_types += 1
+        type_cts.update(type_ids[token] for token in article_tokens)
+
+        # output some stats
+        print(f" done! {len(article_tokens)} tokens,", end=" ")
+        print(f"{len(set(article_tokens))} types"    , end=" ")
+        print(f"({new_types} new types)")
 
     print("\nDONE!\a")
     print("num processed docs:", len(norm_documents))

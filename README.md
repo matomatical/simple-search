@@ -8,6 +8,7 @@ Run package with `python3 simple_search command`, with `command` one of the foll
 
 * `preproc`: Read the entire Simple English Wikipedia, except meta-articles (takes me just under an hour). Save pickled result into `preproc.p`.
 * `index` (WIP): Will construct an inverted index based on the preprocessed documents in `preproc.p`. Will save the pickled result into `index.p`.
+* `search` (Planned): Will load `index.p` and begin resolving queries entered by the user.
 
 ### Data
 
@@ -35,6 +36,39 @@ Possible extensions:
 * [ ] Enhance pre-processing using ML techniques from later in the subject?
 * [ ] Switch to parametric compression or some other compression. Measure speed?
 * [ ] Use `Category:` pages for some kind of evaluation? (Idea: the category page provides relevance information for a query including the category name. Watch out: pages have category backlinks, which could make this too easy?)
+
+## Notes
+
+### Preprocessing
+
+Not including stop-word removal (but skipping meta-articles), preprocessing took about 52 minutes and found the following statistics:
+
+    num processed docs: 184727
+    total num tokens:   30758231
+    total num types:    825956
+
+The documents / word type ID map / word count map stored in `preproc.p` was size 470MB.
+
+#### Finding stop words
+
+Using `simple_search/scripts/stopwords.py` I found some words with (subjectively) low information content to form a stopword list.
+
+Notably this list includes some terms which may not usually be considered stopwords such as "categori" (category/categories), "thumb" (short for thumbnail), "birth" and "live" (many articles about people's lives, containing these words).
+
+Hey that reminds me... I should remove articles that are just a redirect to another article!
+
+
+#### Incorporating article titles
+
+I also decided that the article name better find its way into the article somewhere so that it will be taken into account in searching. I guess article names should be somehow weighted more strongly than article terms but for now I'm just appending them to the article.
+
+After adding article titles to articles, and removing stopwords, here was the result of preprocessing:
+
+    num processed docs: ? (-0)
+    total num tokens:   ? (-?)
+    total num types:    ? (-?)
+
+The size of `preproc.p` decreased to ?MB.
 
 ---
 

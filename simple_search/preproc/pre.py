@@ -1,6 +1,7 @@
 import re
 
 from simple_search.preproc.porter2 import stem
+from simple_search.preproc.stopwords import STOPWORDS
 
 RE_HTML_TAG = re.compile(r"<[^>]*>")
 RE_NON_WORD = re.compile(r"[^\w\d'\-\.]+", flags=re.UNICODE)
@@ -26,7 +27,6 @@ def process(document):
 
     return tokens
 
-STOPWORDS = set()
 def stopword(word):
     return word in STOPWORDS
 
