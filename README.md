@@ -8,8 +8,8 @@ Run package with `python3 simple_search command`, with `command` one of the foll
 
 1. `preproc`: Read and process the entire Simple English Wikipedia, except meta-articles and redirects. Save pickled result into `preproc.p`. Takes me around 50 minutes.
 2. `index`: Construct an inverted index based on the preprocessed documents in `preproc.p`. Save the pickled result into `index.p`.
-3. `search` (planned): Will load `index.p` and begin resolving queries entered interactively by the user.
-4. `query` (planned): Will load `index.p` to resolve a one-time query from the command line.
+3. `search`: Loads `index.p` and begin resolving queries entered interactively by the user.
+4. `query`: Loads `index.p` to resolve a one-time query from the command line.
 
 ### Data
 
