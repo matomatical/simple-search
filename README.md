@@ -6,9 +6,10 @@ A simple [Simple English Wikipedia](https://simple.wikipedia.org/wiki/Simple_Eng
 
 Run package with `python3 simple_search command`, with `command` one of the following:
 
-* `preproc`: Read the entire Simple English Wikipedia, except meta-articles (takes me just under an hour). Save pickled result into `preproc.p`.
-* `index` (WIP): Will construct an inverted index based on the preprocessed documents in `preproc.p`. Will save the pickled result into `index.p`.
-* `search` (Planned): Will load `index.p` and begin resolving queries entered by the user.
+1. `preproc`: Read and process the entire Simple English Wikipedia, except meta-articles and redirects. Save pickled result into `preproc.p`. Takes me around 50 minutes.
+2. `index`: Construct an inverted index based on the preprocessed documents in `preproc.p`. Save the pickled result into `index.p`.
+3. `search` (planned): Will load `index.p` and begin resolving queries entered interactively by the user.
+4. `query` (planned): Will load `index.p` to resolve a one-time query from the command line.
 
 ### Data
 
@@ -29,16 +30,19 @@ For the same reasons, this project does not aim for optimal efficiency or even c
 ## Roadmap
 
 * [x] Pre-process document collection including implementing Porter2 stemming algorithm (or close enough) (week 1, lecture 1)
-* [ ] Build inverted index and implement BM25-scored term-at-a-time query algorithm (week 1, lecture 2)
+* [ ] Build inverted index and implement TFIDF- and BM25-scored term-at-a-time query algorithm (week 1, lecture 2)
 * [ ] Implement index compression (vbyte) and top-k retrieval (WAND) (week 2, lecture 1)
 * [ ] Catch up on week 2 and 3 lectures and add those ideas too. Incremental indexing? Query expansion and relevance feedback? Evaluation of results?
 
 Possible extensions:
 
+* [ ] Switch to block-based compression/decompression and block max WAND.
 * [ ] Enhance pre-processing using ML techniques from later in the subject?
-* [ ] Switch to parametric compression or some other compression. Measure speed?
+* [ ] Consider parametric compression or some other compression (delta?). Evaluate by measuring space/speed tradeoff?
 * [ ] Use `Category:` pages for some kind of evaluation? (Idea: the category page provides relevance information for a query including the category name. Watch out: pages have category backlinks containing category names, which could make this too easy/inflate scores?)
 * [ ] Use `#REDIRECT` articles and other links between Wikipedia pages to enhance the system using structural information (at least: link text) of structural information, to build a network.
+* [ ] Apply incremental indexing techiques to processing the regular English Wikipedia..!?
+* [ ] Take what I learn about streaming graph algorithms next semester and apply to processing the regular English Wikipedia's structure!?
 
 ## Notes
 
@@ -75,6 +79,17 @@ After adding article titles to articles, and removing stopwords, here was the re
 The size of `preproc.p` decreased to 329MB (-141MB).
 
 ### Index construction
+
+The index consists of:
+
+* One pair of posting lists (document ids and corresponding term document frequencies) for each of ~823k terms.
+* One document frequency count for each of ~823k terms (coinciding with the length of the posting lists, but only until we store the latter compressed).
+* A map of terms (strings) to term ids; the remaining lists are indexed by these term ids to save space and time.
+* A map of document ids (as found in posting lists) to document names (strings, to be used for looking up articles in the Wikipedia).
+
+Before compression, the pickled index is 110MB in size.
+
+### Variable-byte encoding the posting lists
 
 Stay tuned!
 

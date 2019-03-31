@@ -7,15 +7,15 @@ from collections import Counter
 # load preprocessed docs (takes about 10s)
 print("LOADING...")
 with open("preproc.p", "rb") as pickle_jar:
-    (norm_documents, term_ids, term_cts) = pickle.load(pickle_jar)
+    documents = pickle.load(pickle_jar)
 
 print("COUNTING...")
 df_t = Counter()
-for _, doc in norm_documents:
+for _, doc in documents:
     df_t.update(set(doc))
 
 print("SCALING...")
-N = len(norm_documents)
+N = len(documents)
 for t in df_t:
     df_t[t] /= N
 

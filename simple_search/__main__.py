@@ -1,10 +1,13 @@
 import sys
 import pickle
-from collections import Counter
 
 from intropy import wiki
 
 from simple_search.preproc import pre
+from simple_search.index import build
+
+PREPROC_FILE = "preproc.p"
+INDEX_FILE   = "index.p"
 
 def main():
     if not sys.argv[1:]:
@@ -12,7 +15,8 @@ def main():
         print("command is one of:",                       file=sys.stderr)
         print("  preproc: read simple english wikipedia", file=sys.stderr)
         print("  index:   construct inverted index",      file=sys.stderr)
-        print("  (more to come...)",                      file=sys.stderr)
+        print("  search:  (UNDER CONSTRUCTION...)",       file=sys.stderr)
+        print("  query:   (UNDER CONSTRUCTION...)",       file=sys.stderr)
         sys.exit(1)
     else:
         command = sys.argv[1]
@@ -21,6 +25,10 @@ def main():
         preproc()
     if command == "index":
         index()
+    if command == "search":
+        search()
+    if command == "query":
+        query()
 
 def preproc():
     wiki.setup( "../../data/simple.wikipedia.org.2017.d/data.bz2"
@@ -28,57 +36,63 @@ def preproc():
               )
 
     # load all the articles
-    n_tokens = 0
-    type_ids = {}
-    type_cts = Counter()
-    norm_documents = []
+    documents = []
     i_all_articles = wiki.load_all(n=None, filter=non_meta)
     for i, (article_name, article) in enumerate(i_all_articles):
-        print(f"processing document {i}: '{article_name}'\n ...")
+        print(f"processing document {i}: '{article_name}'...", end="\n ")
         article = wiki.parse(article).strip_code(normalize=True, collapse=True)
         article = str(article)
         if article.startswith("REDIRECT"):
-            print(" (redirect; skipping)")
+            print("↪ (redirect; skipping) ⤦")
             continue
 
         # process and save this document
         article_tokens  = pre.process(f"{article_name}\n\n{article}")
-        norm_documents.append((article_name, article_tokens))
-
-        # add to vocab and counts
-        n_tokens += len(article_tokens)
-        new_types = 0
-        for token in article_tokens:
-            if token not in type_ids:
-                type_ids[token] = len(type_ids)
-                new_types += 1
-        type_cts.update(type_ids[token] for token in article_tokens)
-
+        documents.append((article_name, article_tokens))
+        
         # output some stats
-        print(f" done! {len(article_tokens)} tokens,", end=" ")
-        print(f"{len(set(article_tokens))} types"    , end=" ")
-        print(f"({new_types} new types)")
+        print(f"↪ done! {len(article_tokens)} tokens.")
+
 
     print("\nDONE!\a")
-    print("num processed docs:", len(norm_documents))
-    print("total num tokens:  ", n_tokens)
-    print("total num types:   ", len(type_ids))
+    print("num processed docs:", len(documents))
+    print("total num tokens:  ", sum(map(lambda n_d: len(d), documents)))
 
-    print("SAVING:")
-    
-    with open("preproc.p", "wb") as pickle_jar:
-        pickle.dump((norm_documents, type_ids, type_cts), pickle_jar)
+    save(PREPROC_FILE, documents)
 
 def non_meta(name):
     return (":" not in name) or (": " in name)
 
 def index():
-    print("LOADING:")
-    with open("preproc.p", "rb") as pickle_jar:
-        (norm_documents, type_ids, type_cts) = pickle.load(pickle_jar)
-    print("num processed docs:", len(norm_documents))
-    print("total num tokens:  ", sum(type_cts.values()))
-    print("total num types:   ", len(type_ids))
+    documents = load(PREPROC_FILE)
+
+    print("inverting documents...", end=" ", flush=True)
+    index = build.SimpleIndex(documents)
+    print("done!")
+
+    save(INDEX_FILE, index)
+
+
+
+def search():
+    index = load(INDEX_FILE)
+
+def load(pfile):
+    print(f"loading {pfile}...", end=" ", flush=True)
+    with open(pfile, "rb") as pickle_jar:
+        data = pickle.load(pickle_jar)
+    print("loaded!")
+    return data
+def save(pfile, data):
+    print("saving...", end=" ", flush=True)
+    with open(pfile, "wb") as pickle_jar:
+        pickle.dump(pickle_jar, data)
+    print(f"saved to {pfile}!")
+
+
+
+
+    
 
 if __name__ == '__main__':
     main()
