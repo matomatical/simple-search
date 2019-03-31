@@ -26,7 +26,7 @@ For the same reasons, this project does not aim for optimal efficiency or even c
 
 ## Roadmap
 
-* [ ] Pre-process document collection including implementing Porter2 stemming algorithm (or close enough) (week 1, lecture 1)
+* [x] Pre-process document collection including implementing Porter2 stemming algorithm (or close enough) (week 1, lecture 1)
 * [ ] Build inverted index and implement BM25-scored term-at-a-time query algorithm (week 1, lecture 2)
 * [ ] Implement index compression (vbyte) and top-k retrieval (WAND) (week 2, lecture 1)
 * [ ] Catch up on week 2 and 3 lectures and add those ideas too. Incremental indexing? 
@@ -43,9 +43,9 @@ Possible extensions:
 
 Not including stop-word removal (but skipping meta-articles), preprocessing took about 52 minutes and found the following statistics:
 
-    num processed docs: 184727
-    total num tokens:   30758231
-    total num types:    825956
+    num processed docs:    184,727
+    total num tokens:   30,758,231
+    total num types:       825,956
 
 The documents / word type ID map / word count map stored in `preproc.p` was size 470MB.
 
@@ -64,11 +64,11 @@ I also decided that the article name better find its way into the article somewh
 
 After adding article titles to articles, and removing stopwords, here was the result of preprocessing:
 
-    num processed docs: ? (-0)
-    total num tokens:   ? (-?)
-    total num types:    ? (-?)
+    num processed docs:    138,910 (-45.8k redirects)
+    total num tokens:   20,037,538 (-10.7M stop words/redirects,+titles)
+    total num types:       823,191 (-2.7k from redirects?)
 
-The size of `preproc.p` decreased to ?MB.
+The size of `preproc.p` decreased to 329MB (-141MB).
 
 ---
 
