@@ -4,7 +4,10 @@ A simple [Simple English Wikipedia](https://simple.wikipedia.org/wiki/Simple_Eng
 
 ## Run
 
-Run package with `python3 simple_search`. (Currently, this preprocesses documents).
+Run package with `python3 simple_search command`, with `command` one of the following:
+
+* `preproc`: Read the entire Simple English Wikipedia, except meta-articles (takes me just under an hour). Save pickled result into `preproc.p`.
+* `index` (WIP): Will construct an inverted index based on the preprocessed documents in `preproc.p`. Will save the pickled result into `index.p`.
 
 ### Data
 
