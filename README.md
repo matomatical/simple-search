@@ -87,11 +87,18 @@ The index consists of:
 * A map of terms (strings) to term ids; the remaining lists are indexed by these term ids to save space and time.
 * A map of document ids (as found in posting lists) to document names (strings, to be used for looking up articles in the Wikipedia).
 
-Before compression, the pickled index is 110MB in size.
+Before compression, the pickled index is 110MB in size and takes about 36 seconds to build.
 
 ### Variable-byte encoding the posting lists
 
-Stay tuned!
+I reimplemented my vbyte encoding functions from the homework and added posting list compression to the index. Now it takes... 1 minute and 16 seconds to build, and is 10MB LARGER THAN BEFORE...? Huh!?
+
+Something is deeply wrong!
+
+TODO:
+
+- [ ] Test vbyte encoding/decoding
+- [ ] Profile (size of?) index before/after compression
 
 
 ---

@@ -86,7 +86,7 @@ def load(pfile):
 def save(pfile, data):
     print("saving...", end=" ", flush=True)
     with open(pfile, "wb") as pickle_jar:
-        pickle.dump(pickle_jar, data)
+        pickle.dump(data, pickle_jar)
     print(f"saved to {pfile}!")
 
 
