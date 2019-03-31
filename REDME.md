@@ -1,18 +1,26 @@
-# *Simple Search*, a simple Simple English Wikipedia search engine
+# *Simple Search*
 
-Run package with `python3 simple_search`.
+A simple (Simple English Wikipedia)[https://simple.wikipedia.org/wiki/Simple_English_Wikipedia] search engine.
+
+## Run
+
+Run package with `python3 simple_search`. (Currently, this preprocesses documents).
+
+### Data
+
+Oh, you would also need a bzipped dump of the Simple English Wikipedia and an associated index file (for finding articles by name in the compressed dump).
+
+I don't provide this data right now, but this repo does contain a package `intropy` for dealing with them (this came mostly from an assignment I built while teaching COMP90059 Introduction to Programming in 2018). `intropy` was originally developed by (@noc7c9)[https://github.com/noc7c9] and myself and relies on the third-party package `mwparserfromhell`.
 
 ## Goals
 
-This project is a chance to practice ideas learned from COMP90042 Web Search and Text Analysis (in particular, the first couple of weeks on IR) by implementing them myself.
+This project is a chance to explore ideas from COMP90042 Web Search and Text Analysis (in particular, the first couple of weeks on IR) by implementing a simple IR system myself.
 
-Pre-existing tools abound for some of the relevant NLP tasks including NLTK (particularly tokenisation and normalisation) and stop word lists, etc. Regardless, in this project I want to implement things, as much as possible, from *standard library Python up*, to maximise *learning and fun*.
+While pre-existing tools abound for some of the relevant NLP tasks (most prominently, NLTK provides efficient and quality tokenisation and normalisation, and probably stop word lists, and probably more) in this project I aim to implement things, as much as possible, from *standard library Python up*, to maximise *learning and enjoyment*.
 
-For the same reasons, this project does not aim for optimal efficiency or even complete correctness or efficiency. Learning about how to *tune* and *test* IR systems are not among my current learning goals, so I will not be spending time on these aspects. Rather, I'm building this project to *study* and *have fun*.
+For the same reasons, this project does not aim for optimal efficiency or even complete correctness. *Tuning* and *testing* an IR system are not among my current learning goals, so I will not be spending time on these aspects. Rather, I'm building this project to *study* and *have fun*.
 
 ## Roadmap
-
-Currently pre-processes documents and that's all.
 
 [ ] Pre-process document collection including implementing Porter2 stemming algorithm (or close enough) (week 1, lecture 1)
 [ ] Build inverted index and implement BM25-scored term-at-a-time query algorithm (week 1, lecture 2)
@@ -22,8 +30,8 @@ Currently pre-processes documents and that's all.
 Possible extensions:
 
 [ ] Enhance pre-processing using ML techniques from later in the subject?
-[ ] Switch to parametric compression
-
+[ ] Switch to parametric compression or some other compression. Measure speed?
+[ ] Use `Category:` pages for some kind of evaluation? (Idea: the category page provides relevance information for a query including the category name. Watch out: pages have category backlinks, which could make this too easy?)
 ---
 
 Made with :purple_heart: by Matt.

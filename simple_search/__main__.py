@@ -14,7 +14,8 @@ def main():
     type_ids = {}
     type_cts = Counter()
     norm_documents = []
-    for i, (article_name, article_raw) in enumerate(wiki.load_all(n=None)):
+    i_all_articles = wiki.load_all(n=None, filter=non_meta)
+    for i, (article_name, article_raw) in enumerate(i_all_articles):
         print("processing", i, "-", article_name, "...")
         article = wiki.parse(article_raw).strip_code(normalize=True,collapse=True)
 
@@ -22,7 +23,7 @@ def main():
         article_tokens  = pre.process(article)
         article_types   = set(article_tokens)
         print(len(article_tokens), "tokens and", len(article_types), "types")
-        norm_documents.append(article_tokens)
+        norm_documents.append((article_name, article_tokens))
 
         # add to vocab and counts
         n_tokens += len(article_tokens)
@@ -42,6 +43,10 @@ def main():
         pickle.dump((norm_documents, type_ids, type_cts), pickle_jar)
 # with open("preproc.p", "rb") as pickle_jar:
 #     (norm_documents, type_ids, type_cts) = pickle.load(pickle_jar)
+
+def non_meta(name):
+    return (":" not in name) or (": " in name)
+    
 
 if __name__ == '__main__':
     main()

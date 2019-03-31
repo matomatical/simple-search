@@ -95,7 +95,7 @@ def load(name):
     except IndexError:
         raise ArticleNotFoundError("Internal error: id={}".format(pageid))
 
-def load_all(n=None):
+def load_all(n=None, filter=lambda name: True):
     global _index_cache, _index_file
 
     # if there's still index file left to read, we should read it all first
@@ -116,10 +116,12 @@ def load_all(n=None):
     # let's start iterating through them (the load function will handle caching 
     # the compressed blocks, which are grouped in the appropriate order i think)
     if n is None: n = len(_index_cache)
-    for i, name in enumerate(_index_cache):
-        if i >= n:
-            break
-        yield (name, load(name))
+    i = 0
+    for name in _index_cache:
+        if i >= n: break
+        if filter(name):
+            yield (name, load(name))
+            i += 1
 
 
 def parse(text):
