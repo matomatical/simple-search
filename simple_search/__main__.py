@@ -58,12 +58,11 @@ def preproc():
         # output some stats
         print(f"↪ done! {len(article_tokens)} tokens.")
 
+    save(PREPROC_FILE, documents)
 
     print("\nDONE!\a")
     print("num processed docs:", len(documents))
-    print("total num tokens:  ", sum(map(lambda n_d: len(d), documents)))
-
-    save(PREPROC_FILE, documents)
+    print("total num tokens:  ", sum(map(lambda n_d: len(n_d[1]), documents)))
 
 def non_meta(name):
     return (":" not in name) or (": " in name)

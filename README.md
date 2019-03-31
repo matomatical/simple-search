@@ -56,7 +56,6 @@ Not including stop-word removal (but skipping meta-articles), preprocessing took
 
     num processed docs:    184,727
     total num tokens:   30,758,231
-    total num types:       825,956
 
 The documents / word type ID map / word count map stored in `preproc.p` was size 470MB.
 
@@ -74,13 +73,13 @@ I remembered from COMP90059 that some (surprisingly short) articles are actually
 
 I also decided that the article name better find its way into the article somewhere so that it will be taken into account in searching. I guess article names should be somehow weighted more strongly than article terms but for now I'm just appending them to the article.
 
-After adding article titles to articles, and removing stopwords, here was the result of preprocessing:
 
-    num processed docs:    138,910 (-45.8k redirects)
-    total num tokens:   20,037,538 (-10.7M stop words/redirects,+titles)
-    total num types:       823,191 (-2.7k from redirects?)
+After adding article titles to articles, skipping redirects, and removing stopwords, here is the result of preprocessing:
 
-The size of `preproc.p` decreased to 329MB (-141MB).
+    num processed docs:    132,640 (-52.0k redirects)
+    total num tokens:   20,013,232 (-10.7M stop words/redirects/+titles)
+
+The size of `preproc.p` decreased to 314MB (-155MB).
 
 ### Index construction
 
