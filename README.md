@@ -31,7 +31,11 @@ For the same reasons, this project does not aim for optimal efficiency or even c
 
 * [x] Pre-process document collection including implementing Porter2 stemming algorithm (or close enough) (week 1, lecture 1)
 * [ ] Build inverted index and implement TFIDF- and BM25-scored term-at-a-time query algorithm (week 1, lecture 2)
+    * [x] tfidf
+    * [ ] bm25
 * [ ] Implement index compression (vbyte) and top-k retrieval (WAND) (week 2, lecture 1)
+    * [x] vbyte compression
+    * [ ] top-k retrieval
 * [ ] Catch up on week 2 and 3 lectures and add those ideas too. Incremental indexing? Query expansion and relevance feedback? Evaluation of results?
 
 Possible extensions:
@@ -91,15 +95,19 @@ Before compression, the pickled index is 110MB in size and takes about 36 second
 
 ### Variable-byte encoding the posting lists
 
-I reimplemented my vbyte encoding functions from the homework and added posting list compression to the index. Now it takes... 1 minute and 16 seconds to build, and is 10MB LARGER THAN BEFORE...? Huh!?
+I reimplemented my vbyte encoding functions from the homework and added posting list compression to the index. Now it takes... 1 minute and 14 seconds. Here are the size results:
 
-Something is deeply wrong!
+    size of _docnames:       3.50MB
+    size of _docfreqs:       1.65MB
+    size of _vocabmap:      20.15MB
+    size of _postings:      59.85MB (-25.38MB, from 85.23MB uncompressed)
+    size of index file:     85.16MB (-25.38MB, from 110.53MB uncompressed)
 
-TODO:
+#### Profiling memory footprint
 
-- [ ] Test vbyte encoding/decoding
-- [ ] Profile (size of?) index before/after compression
+It seems Python is actually pretty efficient at serialising integer lists. Also, the integers in my posting lists are relatively small already. I wonder if savings are greter while the lists are in-memory?
 
+Profiling with `psutil` seems to suggest that the index takes up 500-600MB in memory, and is only decreased by about 50MB using this compression... That doesn't really add up, so there must be some trickery going on within Python itself. Alas, this is where my analysis will end.
 
 ---
 

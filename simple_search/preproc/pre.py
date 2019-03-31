@@ -15,12 +15,10 @@ def process(document):
 
     # 3. tokenise words:
     # (simple approach, using regex)
-    words = RE_NON_WORD.split(document)
-    words = [word.replace(".", "") for word in words] # remove internal punct.
-    word = [word for word in words if word]
-
+    tokens = RE_NON_WORD.split(document)
+    
     # 4. normalise words:
-    tokens = [normalise(word) for word in words]
+    tokens = [normalise(token) for token in tokens]
 
     # 5. remove unwanted words:
     tokens = [token for token in tokens if token and not stopword(token)]
@@ -28,7 +26,9 @@ def process(document):
     return tokens
 
 def stopword(word):
+
     return word in STOPWORDS
 
 def normalise(word):
+    word = word.replace(".", "") # remove internal punct.
     return stem(word)
